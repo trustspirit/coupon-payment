@@ -31,6 +31,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.testcontainers:junit-jupiter:1.20.4'
     testImplementation 'org.testcontainers:postgresql:1.20.4'
@@ -38,4 +39,9 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
-test { useJUnitPlatform() }
+test {
+    useJUnitPlatform()
+    // OrbStack/Docker 29.x는 API 1.40 미만을 거부하는데 Testcontainers 내부
+    // docker-java가 기본 1.32로 핑을 보낸다. docker-java가 읽는 api.version을 올려 맞춘다.
+    systemProperty 'api.version', '1.43'
+}
