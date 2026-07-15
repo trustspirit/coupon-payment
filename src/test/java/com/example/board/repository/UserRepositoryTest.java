@@ -16,10 +16,10 @@ class UserRepositoryTest extends PostgresTestContainer {
     @Test
     void findByEmail_returnsSavedUser() {
         userRepository.save(User.builder()
-                .email("a@example.com").password("hash").nickname("nick").build());
+                .email("repo-user@example.com").password("hash").nickname("nick").build());
 
-        assertThat(userRepository.findByEmail("a@example.com")).isPresent();
-        assertThat(userRepository.existsByEmail("a@example.com")).isTrue();
+        assertThat(userRepository.findByEmail("repo-user@example.com")).isPresent();
+        assertThat(userRepository.existsByEmail("repo-user@example.com")).isTrue();
         assertThat(userRepository.existsByEmail("none@example.com")).isFalse();
     }
 }
