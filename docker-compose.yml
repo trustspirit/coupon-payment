@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: board-postgres
+    environment:
+      POSTGRES_DB: board
+      POSTGRES_USER: board
+      POSTGRES_PASSWORD: boardpw
+    ports:
+      - "5432:5432"
+    volumes:
+      - board-pgdata:/var/lib/postgresql/data
+volumes:
+  board-pgdata:
