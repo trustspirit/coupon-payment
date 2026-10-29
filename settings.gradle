@@ -1,1 +1,3 @@
-rootProject.name = 'board'
+rootProject.name = 'spring-server'
+
+include ':examples:board'

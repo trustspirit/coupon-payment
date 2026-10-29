@@ -6,8 +6,9 @@
 
 ## 현재 위치
 
-- **설계**: [커머스 MSA 모노레포 설계](../superpowers/specs/2026-10-29-commerce-msa-design.md) 작성 완료 → 빌더 체크 → **사용자 검토 대기**
-- **다음 할 일**: 설계 승인 → 구현 계획(`docs/superpowers/plans/2026-10-29-*`) 작성 → **Step 0.1** (기존 코드를 `examples/board`로 이동)부터 사용자가 직접 구현
+- **설계**: [커머스 MSA 모노레포 설계](../superpowers/specs/2026-10-29-commerce-msa-design.md) — 빌더 체크 반영 완료, 기본값 8개(설계 문서 Claude 결정 항목)는 **사용자 검토 대기**
+- **완료**: Step 0.1 (2026-10-29)
+- **다음 할 일**: **Step 0.2** — `gradle/libs.versions.toml` + `build-logic` convention plugin
 
 ## 문서
 
@@ -22,7 +23,7 @@
 - 설계 판단 지점마다 ★ Insight로 설명
 - **테스트는 당분간 스킵, 나중에 돌아온다** (Phase 2 전에 재논의). 완료 확인은 빌드 성공 + 수동 확인(curl)
 - 빌드: `JAVA_HOME=/opt/homebrew/opt/openjdk@21 ./gradlew build` (Docker 실행 필요)
-- 브랜치: Phase마다 `feat/phase-N-...`, 커밋은 사용자가 함
+- 브랜치 없이 `master`에서 작업, 커밋은 사용자가 함 (푸시 전 테스트 통과)
 - 설계·계획·진행 문서와 `AGENTS.md`/`CLAUDE.md`는 **git에 커밋** (다른 컴퓨터, 원격 에이전트도 이어받기 위해)
 
 상태 표기: ⬜ 시작 전 · 🔄 진행 중 · 👀 리뷰 대기 · ✅ 완료
@@ -32,7 +33,7 @@
 ## Phase 0 — 모노레포 전환
 | Step | 내용 | 상태 | 커밋 |
 |---|---|---|---|
-| 0.1 | 기존 코드 → `examples/board`, 멀티모듈 루트 | ⬜ | |
+| 0.1 | 기존 코드 → `examples/board`, 멀티모듈 루트 | ✅ | (이번 커밋) |
 | 0.2 | 버전 카탈로그 + `build-logic` convention plugin | ⬜ | |
 | 0.3 | docker-compose: 서비스별 DB | ⬜ | |
 
@@ -101,7 +102,7 @@
 | 2026-10-29 | Gateway는 Server MVC로 확정 | 사용자 |
 | 2026-10-29 | refresh 회전 + 재사용 감지를 Step 1.3으로 추가 (board에는 없던 기능) | 사용자 |
 | 2026-10-29 | 테스트는 스킵하고 나중에 돌아옴 (Phase 2 전 재논의) | 사용자 |
-| 2026-10-29 | Phase별 브랜치, Step별 커밋은 사용자가 함 | Claude (변경 가능) |
+| 2026-10-29 | 브랜치 없이 master에서 작업, 커밋은 사용자가 함 | 사용자 |
 | 2026-10-29 | 인수인계 문서(AGENTS.md, CLAUDE.md, PROGRESS.md, 설계 문서)를 git에 포함 | 사용자 |
 
 ## 학습 노트
@@ -109,4 +110,9 @@
 > Step별 측정 결과, 학습 질문에 대한 답, 새로 알게 된 점을 기록한다.
 
 ### Step 0.1
--
+- `settings.gradle`: `rootProject.name`은 모노레포 이름, `include ':examples:board'` → 디렉터리 `/` 대신 `:`. 중간 `:examples`는 빈 프로젝트로 자동 생성됨
+- 루트에 `build.gradle`을 남기면 루트가 "소스 없는 Boot 앱"이 됨 → 앱 설정은 모듈로
+- `.gradle/`(빌드 전체 캐시, 루트에 하나)과 `build/`(모듈마다 생성)는 생성물 → 옮기지 말고 지우면 Gradle이 다시 만듦
+- `.gitignore`의 `build/`(앞에 `/` 없음)는 모든 깊이에 매칭됨 → 모듈별로 다시 쓸 필요 없음
+- IntelliJ Move 리팩터링이 문서 속 경로 문자열까지 바꿀 수 있음 → 파일 이동은 `git mv`로
+- `git mv`만 한 커밋은 rename(`R`)으로 인식 → `git log --follow`로 이력 추적 가능
